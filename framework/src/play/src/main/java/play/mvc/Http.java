@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import play.api.libs.json.JsValue;
+import scala.json.ast.JValue;
 import play.api.mvc.Headers;
 import play.core.j.JavaParsers;
 import play.core.system.RequestIdProvider;
@@ -918,7 +918,7 @@ public class Http {
          * @param json the JsValue
          * @return the modified builder
          */
-        public RequestBuilder bodyJson(JsValue json) {
+        public RequestBuilder bodyJson(JValue json) {
             return bodyJson(Json.parse(play.api.libs.json.Json.stringify(json)));
         }
 

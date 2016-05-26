@@ -41,14 +41,14 @@ object HttpBinApplication {
         Json.obj(
           "json" -> JsNull,
           "data" -> "",
-          "form" -> JsObject(Nil)
+          "form" -> JsObject(Map.empty)
         ) ++ (r.body match {
             // Json Body
             case e: JsValue =>
               Json.obj("json" -> e)
             // X-WWW-Form-Encoded
             case f: Map[String, Seq[String]] @unchecked =>
-              Json.obj("form" -> JsObject(f.mapValues(x => JsString(x.mkString(", "))).toSeq))
+              Json.obj("form" -> JsObject(f.mapValues(x => JsString(x.mkString(", ")))))
             // Anything else
             case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
               Json.obj(
@@ -168,7 +168,7 @@ object HttpBinApplication {
   val cookies: Routes = {
     case GET(p"/cookies") =>
       Action { request =>
-        Ok(Json.obj("cookies" -> JsObject(request.cookies.toSeq.map(x => x.name -> JsString(x.value)))))
+        Ok(Json.obj("cookies" -> JsObject(request.cookies.toSeq.map(x => x.name -> JsString(x.value)).toMap)))
       }
   }
 

@@ -31,7 +31,7 @@ case class RecursiveSearch(key: String) extends PathNode {
   def set(json: JsValue, transform: JsValue => JsValue): JsValue = json match {
     case obj: JsObject =>
       var found = false
-      val o = JsObject(obj.fields.map {
+      val o = JsObject(obj.value.map {
         case (k, v) =>
           if (k == this.key) {
             found = true
@@ -69,7 +69,7 @@ case class KeyPathNode(key: String) extends PathNode {
   def set(json: JsValue, transform: JsValue => JsValue): JsValue = json match {
     case obj: JsObject =>
       var found = false
-      val o = JsObject(obj.fields.map {
+      val o = JsObject(obj.value.map {
         case (k, v) =>
           if (k == this.key) {
             found = true
@@ -216,7 +216,7 @@ case class JsPath(path: List[PathNode] = List()) {
 
     def filterPathNode(json: JsObject, node: PathNode, value: JsValue): JsResult[JsObject] = {
       node match {
-        case KeyPathNode(key) => JsSuccess(JsObject(json.fields.filterNot(_._1 == key)) ++ Json.obj(key -> value))
+        case KeyPathNode(key) => JsSuccess(JsObject(json.value.filterNot(_._1 == key)) ++ Json.obj(key -> value))
         case _ => JsError(JsPath(), ValidationError("error.expected.keypathnode"))
       }
     }

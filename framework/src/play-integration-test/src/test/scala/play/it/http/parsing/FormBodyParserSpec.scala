@@ -10,7 +10,7 @@ import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms.{ mapping, nonEmptyText, number }
 import play.api.http.{ MimeTypes, Writeable }
-import play.api.libs.json.Json
+import play.api.libs.json._
 import play.api.mvc.{ BodyParser, BodyParsers, Result, Results }
 import play.api.test.{ FakeRequest, PlaySpecification, WithApplication }
 import scala.collection.JavaConverters._

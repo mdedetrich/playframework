@@ -8,6 +8,7 @@ import java.util.{ Calendar, Date, TimeZone }
 import com.fasterxml.jackson.databind.{ JsonNode, ObjectMapper }
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Json._
+import play.api.libs.json._
 
 import scala.collection.immutable.ListMap
 
@@ -326,23 +327,23 @@ object JsonSpec extends org.specs2.mutable.Specification {
 
     "Can parse recursive object" in {
       val recursiveJson = """{"foo": {"foo":["bar"]}, "bar": {"foo":["bar"]}}"""
-      val expectedJson = JsObject(List(
-        "foo" -> JsObject(List(
-          "foo" -> JsArray(List[JsValue](JsString("bar")))
+      val expectedJson = JsObject(Map(
+        "foo" -> JsObject(Map(
+          "foo" -> JsArray(Vector[JsValue](JsString("bar")))
         )),
-        "bar" -> JsObject(List(
-          "foo" -> JsArray(List[JsValue](JsString("bar")))
+        "bar" -> JsObject(Map(
+          "foo" -> JsArray(Vector[JsValue](JsString("bar")))
         ))
       ))
       Json.parse(recursiveJson) must equalTo(expectedJson)
     }
 
     "Can parse null values in Object" in {
-      Json.parse("""{"foo": null}""") must_== JsObject(List("foo" -> JsNull))
+      Json.parse("""{"foo": null}""") must_== JsObject(Map("foo" -> JsNull))
     }
 
     "Can parse null values in Array" in {
-      Json.parse("[null]") must_== JsArray(List(JsNull))
+      Json.parse("[null]") must_== JsArray(Vector(JsNull))
     }
 
     "JSON pretty print" in {

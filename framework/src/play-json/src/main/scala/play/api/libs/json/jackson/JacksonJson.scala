@@ -46,11 +46,11 @@ private[jackson] object JsValueSerializer extends JsonSerializer[JsValue] {
 
   override def serialize(value: JsValue, json: JsonGenerator, provider: SerializerProvider) {
     value match {
-      case JsNumber(v) => {
+      case v: JsNumber => {
         // Workaround #3784: Same behaviour as if JsonGenerator were
         // configured with WRITE_BIGDECIMAL_AS_PLAIN, but forced as this
         // configuration is ignored when called from ObjectMapper.valueToTree
-        val raw = v.bigDecimal.stripTrailingZeros.toPlainString
+        val raw = v.to[BigDecimal].bigDecimal.stripTrailingZeros.toPlainString
 
         if (raw contains ".") json.writeTree(new DecimalNode(new JBigDec(raw)))
         else json.writeTree(new BigIntegerNode(new BigInteger(raw)))
@@ -134,7 +134,7 @@ private[jackson] class JsValueDeserializer(factory: TypeFactory, klass: Class[_]
       case JsonTokenId.ID_START_ARRAY => (None, ReadingList(ListBuffer()) +: parserContext)
 
       case JsonTokenId.ID_END_ARRAY => parserContext match {
-        case ReadingList(content) :: stack => (Some(JsArray(content)), stack)
+        case ReadingList(content) :: stack => (Some(JsArray(content.toVector)), stack)
         case _ => throw new RuntimeException("We should have been reading list, something got wrong")
       }
 
@@ -146,7 +146,7 @@ private[jackson] class JsValueDeserializer(factory: TypeFactory, klass: Class[_]
       }
 
       case JsonTokenId.ID_END_OBJECT => parserContext match {
-        case ReadingMap(content) :: stack => (Some(JsObject(content)), stack)
+        case ReadingMap(content) :: stack => (Some(JsObject(content.toMap)), stack)
         case _ => throw new RuntimeException("We should have been reading an object, something got wrong")
       }
 

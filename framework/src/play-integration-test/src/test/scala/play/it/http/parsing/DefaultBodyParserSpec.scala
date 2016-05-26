@@ -8,6 +8,7 @@ import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import play.api.mvc._
 import play.api.test._
+import play.api.libs.json._
 
 object DefaultBodyParserSpec extends PlaySpecification {
 

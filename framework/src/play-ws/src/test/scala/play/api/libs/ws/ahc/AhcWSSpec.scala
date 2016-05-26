@@ -15,6 +15,7 @@ import play.api.Play
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.oauth.{ ConsumerKey, OAuthCalculator, RequestToken }
 import play.api.libs.ws._
+import play.api.libs.json._
 import play.api.mvc._
 import play.api.routing.sird._
 import play.api.test._

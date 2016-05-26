@@ -104,11 +104,11 @@ object JsonValidSpec extends Specification {
     }
 
     "validate JsArray of stream to List" in {
-      JsArray(Stream("alpha", "beta", "delta") map JsString.apply).validate[List[String]] must equalTo(JsSuccess(List("alpha", "beta", "delta")))
+      JsArray(Stream("alpha", "beta", "delta").toVector map JsString.apply).validate[List[String]] must equalTo(JsSuccess(List("alpha", "beta", "delta")))
     }
 
     "invalidate JsArray of stream to List with wrong type conversion" in {
-      JsArray(Stream(JsNumber(1), JsString("beta"), JsString("delta"), JsNumber(4), JsString("five"))).validate[List[Int]] must equalTo(
+      JsArray(Stream(JsNumber(1), JsString("beta"), JsString("delta"), JsNumber(4), JsString("five")).toVector).validate[List[Int]] must equalTo(
         JsError(Seq(
           JsPath(1) -> Seq(ValidationError("error.expected.jsnumber")),
           JsPath(2) -> Seq(ValidationError("error.expected.jsnumber")),
@@ -116,7 +116,7 @@ object JsonValidSpec extends Specification {
         ))
       )
 
-      JsArray(Stream(JsString("alpha"), JsNumber(5), JsBoolean(true))).validate[List[Int]] must equalTo(
+      JsArray(Stream(JsString("alpha"), JsNumber(5), JsBoolean(true)).toVector).validate[List[Int]] must equalTo(
         JsError(Seq(
           JsPath(0) -> Seq(ValidationError("error.expected.jsnumber")),
           JsPath(2) -> Seq(ValidationError("error.expected.jsnumber"))

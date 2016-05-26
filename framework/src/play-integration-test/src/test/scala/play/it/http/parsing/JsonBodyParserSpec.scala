@@ -6,7 +6,7 @@ package play.it.http.parsing
 import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
-import play.api.libs.json.{ Json, JsError }
+import play.api.libs.json._
 import play.api.mvc.Results.BadRequest
 import play.api.mvc.{ BodyParser, BodyParsers }
 import play.api.test._

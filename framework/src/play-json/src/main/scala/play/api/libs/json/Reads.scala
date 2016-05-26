@@ -131,7 +131,7 @@ object Reads extends ConstraintReads with PathReads with DefaultReads {
 
   implicit object JsObjectMonoid extends Monoid[JsObject] {
     def append(o1: JsObject, o2: JsObject) = o1 deepMerge o2
-    def identity = JsObject(Seq())
+    def identity = JsObject(Map.empty)
   }
 
   implicit val JsObjectReducer = Reducer[JsObject, JsObject](o => o)
@@ -141,7 +141,7 @@ object Reads extends ConstraintReads with PathReads with DefaultReads {
     def identity = JsArray()
   }
 
-  implicit val JsArrayReducer = Reducer[JsValue, JsArray](js => JsArray(Seq(js)))
+  implicit val JsArrayReducer = Reducer[JsValue, JsArray](js => JsArray(Vector(js)))
 }
 
 /**
@@ -209,7 +209,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
    */
   implicit object IntReads extends Reads[Int] {
     def reads(json: JsValue) = json match {
-      case JsNumber(n) if n.isValidInt => JsSuccess(n.toInt)
+      case n: JsNumber if scala.util.Try {n.value.toInt}.isSuccess => JsSuccess(n.to[Int])
       case JsNumber(n) => JsError("error.expected.int")
       case _ => JsError("error.expected.jsnumber")
     }
@@ -220,7 +220,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
    */
   implicit object ShortReads extends Reads[Short] {
     def reads(json: JsValue) = json match {
-      case JsNumber(n) if n.isValidShort => JsSuccess(n.toShort)
+      case n: JsNumber if scala.util.Try {n.value.toShort}.isSuccess => JsSuccess(n.to[Short])
       case JsNumber(n) => JsError("error.expected.short")
       case _ => JsError("error.expected.jsnumber")
     }
@@ -231,7 +231,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
    */
   implicit object ByteReads extends Reads[Byte] {
     def reads(json: JsValue) = json match {
-      case JsNumber(n) if n.isValidByte => JsSuccess(n.toByte)
+      case n: JsNumber if n.to[BigDecimal].isValidByte => JsSuccess(n.to[BigDecimal].toByte)
       case JsNumber(n) => JsError("error.expected.byte")
       case _ => JsError("error.expected.jsnumber")
     }
@@ -242,7 +242,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
    */
   implicit object LongReads extends Reads[Long] {
     def reads(json: JsValue) = json match {
-      case JsNumber(n) if n.isValidLong => JsSuccess(n.toLong)
+      case n: JsNumber if scala.util.Try {n.value.toLong}.isSuccess => JsSuccess(n.to[Long])
       case JsNumber(n) => JsError("error.expected.long")
       case _ => JsError("error.expected.jsnumber")
     }
@@ -276,7 +276,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       scala.util.control.Exception.catching(classOf[NumberFormatException])
         .opt(JsSuccess(BigDecimal(new java.math.BigDecimal(s))))
         .getOrElse(JsError(ValidationError("error.expected.numberformatexception")))
-    case JsNumber(d) => JsSuccess(d.underlying)
+    case JsNumber(d) => JsSuccess(BigDecimal(d))
     case _ => JsError(ValidationError("error.expected.jsnumberorjsstring"))
   })
 
@@ -288,7 +288,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       scala.util.control.Exception.catching(classOf[NumberFormatException])
         .opt(JsSuccess(new java.math.BigDecimal(s)))
         .getOrElse(JsError(ValidationError("error.expected.numberformatexception")))
-    case JsNumber(d) => JsSuccess(d.underlying)
+    case JsNumber(d) => JsSuccess(new java.math.BigDecimal(d))
     case _ => JsError(ValidationError("error.expected.jsnumberorjsstring"))
   })
 

@@ -253,6 +253,7 @@ object Dependencies {
     jodatime,
     jodaConvert,
     "org.scala-lang" % "scala-reflect" % scalaVersion,
+    "org.mdedetrich" %% "scala-json-ast" % "1.0.0-M1",
     logback % Test) ++
   jacksons ++
   specsBuild.map(_ % Test)
